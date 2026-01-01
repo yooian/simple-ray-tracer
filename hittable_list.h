@@ -11,7 +11,8 @@
 class hittable_list : public hittable
 {
 public:
-    // wouldnt be able to store hittable or hittable* since it's abstract
+    // wouldnt be able to store hittable since it's abstract
+    // wouldn't be able to delete hittable* without manually deleting (unsafe)
     std::vector<std::shared_ptr<hittable>> objects;
 
     hittable_list() {}
