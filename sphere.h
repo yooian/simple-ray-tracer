@@ -10,7 +10,7 @@ public:
 
     bool hit(const ray &r, double ray_tmin, double ray_tmax, hit_record &rec) const override
     {
-        vec3 oc = center - r.origin();
+        vec3 oc = center - r.origin(); // Technically should be origin - center but invert h to account for it
         auto a = r.direction().length_squared();
         auto h = dot(r.direction(), oc);
         auto c = oc.length_squared() - radius * radius;
