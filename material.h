@@ -14,4 +14,27 @@ public:
     };
 }
 
+/*
+ * Lambertian (diffuse) reflectance can either
+ * always scatter and attenuate light according to its reflectance 𝑅,
+ * or it can sometimes scatter (with probability 1−𝑅) with no attenuation
+ * (where a ray that isn't scattered is just absorbed into the material).
+ * It could also be a mixture of both those strategies.
+ *
+ * Here we are choosing to just always scatter to keep it simple
+ */
+
+class lambertian : public material
+{
+public:
+    lambertian(const color &albedo) : albedo(albedo) {}
+
+    bool scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const override
+    {
+    }
+
+private:
+    color albedo;
+};
+
 #endif
