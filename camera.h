@@ -10,8 +10,9 @@ public:
     // we're keeping it simple and having public parameters so the code that
     // uses camera can directly set the parameters. no complicated constructor
 
-    double aspect_ratio = 1.0; // Ratio image width/height
-    int image_width = 100;     // In pixels
+    double aspect_ratio = 1.0;  // Ratio image width/height
+    int image_width = 100;      // In pixels
+    int samples_per_pixel = 10; // Count of random samples for each pixel
 
     void render(const hittable &world)
     {
@@ -26,12 +27,13 @@ public:
             std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i)
             {
-                auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-                auto ray_direction = pixel_center - camera_center;
-                ray r(camera_center, ray_direction);
-
-                color pixel_color = ray_color(r, world);
-                write_color(std::cout, pixel_color);
+                color pixel_color(0, 0, 0);
+                for (int sample = 0; sample < samples_per_pixel; ++sample)
+                {
+                    ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, world);
+                }
+                write_color(std::cout, pixel_samples_scale * pixel_color);
             }
         }
 
@@ -40,17 +42,20 @@ public:
 
 private:
     /* Private Camera Variables Here */
-    int image_height;     // Rendered image height
-    point3 camera_center; // Camera center
-    point3 pixel00_loc;   // Location of pixel 0, 0
-    vec3 pixel_delta_u;   // Offset to pixel to the right
-    vec3 pixel_delta_v;   // Offset to pixel below
+    int image_height;           // Rendered image height
+    double pixel_samples_scale; // Color scale factor for a sum of pixel samples
+    point3 camera_center;       // Camera center
+    point3 pixel00_loc;         // Location of pixel 0, 0
+    vec3 pixel_delta_u;         // Offset to pixel to the right
+    vec3 pixel_delta_v;         // Offset to pixel below
 
     void initialize()
     {
         // Calculate image height, at least 1
         image_height = int(image_width / aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
+
+        pixel_samples_scale = 1.0 / samples_per_pixel;
 
         // Camera
         auto focal_length = 1.0;
@@ -77,7 +82,11 @@ private:
     {
         // Construct a camera ray from origin to a randomly sampled point around pixel loc [i,j]
         auto offset = sample_square(); // returns a ray pointing to a unit square around origin
-        // Translating the sample region to pixel loc using the offset x and y (* pixel_delta to match viewport delta)
+
+        // Translating the sample region to pixel loc using the offset x and y
+        // We basically inserted the sampling offset to the normal pixel_center calculation:
+        //      auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+        //      auto ray_direction = pixel_center - camera_center;
         auto pixel_sample = pixel00_loc + ((i + offset.x()) * pixel_delta_u) + ((j + offset.y()) * pixel_delta_v);
         auto ray_origin = camera_center;
         auto ray_direction = pixel_sample - ray_origin;
