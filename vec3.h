@@ -121,4 +121,17 @@ inline vec3 unit_vector(const vec3 &v)
     return v / v.length();
 }
 
+// Rejection method for generating random vector on surface of a unit sphere (simple but inefficient)
+inline vec3 random_unit_vector()
+{
+    while (true)
+    {
+        auto p = vec3::random(-1, 1);
+        auto lensq = p.length_squared();
+        if (lensq <= 1)
+        { // normalize to produce unit vector if it's within unit sphere
+            return p / sqrt(lensq);
+        }
+    }
+}
 #endif
