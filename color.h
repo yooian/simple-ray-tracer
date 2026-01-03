@@ -9,7 +9,7 @@ using color = vec3;
 // accounting for gamma correction in our linear images
 inline double linear_to_gamma(double linear_component)
 {
-    if (linear_component < 0)
+    if (linear_component > 0)
         return std::sqrt(linear_component);
     return 0;
 }
