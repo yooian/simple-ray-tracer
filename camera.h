@@ -10,8 +10,32 @@ public:
     // we're keeping it simple and having public parameters so the code that
     // uses camera can directly set the parameters. no complicated constructor
 
+    double aspect_ratio = 16.0 / 9.0; // Ratio image width/height
+    int image_width = 400;            // In pixels
+
     void render(const hittable &world)
     {
+        initialize();
+
+        // Render
+        std::cout << "P3\n"
+                  << image_width << ' ' << image_height << "\n255\n";
+
+        for (int j = 0; j < image_height; ++j)
+        {
+            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+            for (int i = 0; i < image_width; ++i)
+            {
+                auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+                auto ray_direction = pixel_center - camera_center;
+                ray r(camera_center, ray_direction);
+
+                color pixel_color = ray_color(r, world);
+                write_color(std::cout, pixel_color);
+            }
+        }
+
+        std::clog << "\rDone.		\n";
     }
 
 private:
