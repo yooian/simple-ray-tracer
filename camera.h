@@ -73,9 +73,20 @@ private:
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
     }
 
+    ray get_ray(int i, int j) const
+    {
+        // Construct a camera ray from origin to a randomly sampled point around pixel loc [i,j]
+        auto offset = sample_square(); // returns a ray pointing to a unit square around origin
+        // Translating the sample region to pixel loc using the offset x and y (* pixel_delta to match viewport delta)
+        auto pixel_sample = pixel00_loc + ((i + offset.x()) * pixel_delta_u) + ((j + offset.y()) * pixel_delta_v);
+        auto ray_origin = camera_center;
+        auto ray_direction = pixel_sample - ray_origin;
+        return ray(ray_origin, ray_direction);
+    }
+
     vec3 sample_square() const
     {
-        // Returns the vector to a random point in the [-0.5,-0.5]-[+0.5,+0.5] unit square
+        // Returns the vector to a random point in a [-0.5,-0.5]-[+0.5,+0.5] unit square
         return vec3(random_double() - 0.5, random_double() - 0.5, 0);
     }
 
