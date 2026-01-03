@@ -151,4 +151,15 @@ inline vec3 random_on_hemisphere(const vec3 &normal)
     else
         return -generated_unit_vec;
 }
+
+// A ray v coming in down-right with a normal n pointing straight up hits the surface,
+// the downward force must reflect while the sideways motion remains constant.
+// We isolate downward force by projecting v onto n (b)
+// b = (v dot n) * n     <-   dot results in scalar so multiply by n for downward dir
+// -b just negates downward motion, so -2b reflects it opposite way
+inline vec3 reflect(const vec3 &v, const vec3 &n)
+{
+    return v - 2 * dot(v, n) * n;
+}
+
 #endif
