@@ -87,6 +87,6 @@ private:
     // Refractive index in vacuum or air, or ratio of material's index over the
     // index of the enclosing media
     double refraction_index;
-}
+};
 
 #endif
