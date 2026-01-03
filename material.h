@@ -22,6 +22,7 @@ public:
  * It could also be a mixture of both those strategies.
  *
  * Here we are choosing to just always scatter to keep it simple
+ * We could also scatter with probability p and attenuation = albedo / p
  */
 
 class lambertian : public material
