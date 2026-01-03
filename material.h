@@ -84,7 +84,7 @@ public:
 
         bool cannot_refract = ri * sin_theta > 1.0;
         vec3 direction;
-        if (cannot_refract)
+        if (cannot_refract || reflectance(cos_theta, ri) > random_double())
             direction = reflect(unit_direction, rec.normal);
         else
             direction = refract(unit_direction, rec.normal, ri);
@@ -97,6 +97,14 @@ private:
     // Refractive index in vacuum or air, or ratio of material's index over the
     // index of the enclosing media
     double refraction_index;
+
+    // Christophe Schlick polynomial approximation for glass reflectivity that varies by angle
+    static double reflectance(double cosine, double refraction_index)
+    {
+        auto r0 = (1 - refraction_index) / (1 + refraction_index);
+        r0 = r0 * r0;
+        return r0 + (1 - r0) * std::pow((1 - cosine), 5);
+    }
 };
 
 #endif
