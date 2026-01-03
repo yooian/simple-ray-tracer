@@ -73,6 +73,12 @@ private:
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
     }
 
+    vec3 sample_square() const
+    {
+        // Returns the vector to a random point in the [-0.5,-0.5]-[+0.5,+0.5] unit square
+        return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+    }
+
     // we're moving ray_color() here
     color ray_color(const ray &r, const hittable &world) const
     {
