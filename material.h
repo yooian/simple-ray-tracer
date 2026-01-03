@@ -66,10 +66,10 @@ private:
     double fuzz;
 };
 
-class dialectric : public material
+class dielectric : public material
 {
 public:
-    dialectric(double refraction_index) : refraction_index(refraction_index) {}
+    dielectric(double refraction_index) : refraction_index(refraction_index) {}
 
     bool scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const override
     {
