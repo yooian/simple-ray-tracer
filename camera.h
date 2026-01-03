@@ -65,12 +65,12 @@ private:
         auto viewport_v = vec3(0, -viewport_height, 0);
 
         // Horizontal/Vertical delta vectors from pixel to pixel
-        auto pixel_delta_u = viewport_u / image_width;
-        auto pixel_delta_v = viewport_v / image_height;
+        pixel_delta_u = viewport_u / image_width;
+        pixel_delta_v = viewport_v / image_height;
 
         // Calculat location of upper-left pixel
         auto viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
-        auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+        pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
     }
 
     // we're moving ray_color() here
