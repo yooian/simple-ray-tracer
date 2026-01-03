@@ -15,16 +15,6 @@ public:
     double y() const { return e[1]; }
     double z() const { return e[2]; }
 
-    double length() const
-    {
-        return std::sqrt(length_squared());
-    }
-
-    double length_squared() const
-    {
-        return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
-    }
-
     // operator overloads
     vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
     double operator[](int i) const { return e[i]; }
@@ -49,6 +39,29 @@ public:
     vec3 &operator/=(double t)
     {
         return *this *= 1 / t;
+    }
+
+    // Utility Member Functions
+
+    double length() const
+    {
+        return std::sqrt(length_squared());
+    }
+
+    double length_squared() const
+    {
+        return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+    }
+
+    // Generating arbitrary random vectors
+    static vec3 random()
+    {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    static vec3 random(double min, double max)
+    {
+        return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
     }
 };
 
