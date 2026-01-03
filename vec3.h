@@ -128,7 +128,8 @@ inline vec3 random_unit_vector()
     {
         auto p = vec3::random(-1, 1);
         auto lensq = p.length_squared();
-        if (lensq <= 1)
+        // Add lower bound to avoid underflow error (small values -> 0 near center of sphere)
+        if (1e-160 < lensq && lensq <= 1)
         { // normalize to produce unit vector if it's within unit sphere
             return p / sqrt(lensq);
         }
