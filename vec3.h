@@ -162,4 +162,17 @@ inline vec3 reflect(const vec3 &v, const vec3 &n)
     return v - 2 * dot(v, n) * n;
 }
 
+// Based on snells law: eta * sin(theta) = eta' * sin(theta')
+// refrated ray = sin(theta') = eta/eta' * sin(theta)
+// On refracted side of surface, there's refracted ray R' and normal n', with angle theta'
+// R' can be split into perpendicular R' and parallel R' (to the normal n')
+// messy final equation but treated as fact for now
+inline vec3 refract(const vec3 &uv, const vec3 &n, double etai_over_etat)
+{
+    auto cos_theta = std::fmin(dot(-uv, n), 1.0);
+    vec3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
+    vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
+}
+
 #endif
