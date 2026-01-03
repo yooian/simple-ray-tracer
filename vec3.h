@@ -135,4 +135,14 @@ inline vec3 random_unit_vector()
         }
     }
 }
+
+// Check if unit vector is on the same hemisphere as normal (want it pointing away from surface)
+inline vec3 random_on_hemisphere(const vec3 &normal)
+{
+    vec3 generated_unit_vec = random_unit_vector();
+    if (dot(generated_unit_vec, normal) > 0.0) // aligned with normal
+        return generated_unit_vec;
+    else
+        return -generated_unit_vec;
+}
 #endif
