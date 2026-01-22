@@ -14,28 +14,28 @@ public:
         // D is offset.
 
         // Need normal of plane the triangle sits on
-        vec3 v0v1 = v0 - v1; // might need to flip for culling?
-        vec3 v0v2 = v0 - v2;
+        vec3 v0v1 = v1 - v0; // might need to flip for culling?
+        vec3 v0v2 = v2 - v0;
         N = unit_vector(cross(v0v1, v0v2)); // N = plane normal
-        D = -dot(N, v0)
+        D = -dot(N, v0);
     }
 
     bool hit(const ray &r, interval ray_t, hit_record &rec) const override
     {
         // Calculate P and t
-        vec3 denom = dot(N, r.dir);
+        double denom = dot(N, r.direction());
 
-        if (near_zero(denom))
+        if (std::fabs(denom) < 1e-8)
         {
             return false;
         }
 
         // Check interval of t
-        vec3 t = -(dot(N, r.orig) + D) / denom;
+        double t = -(dot(N, r.origin()) + D) / denom;
         if (!ray_t.surrounds(t))
-        {
             return false;
-        }
+
+        point3 p = r.at(t);
 
         // Inside-outside test
         vec3 v0v1 = v1 - v0;
@@ -43,23 +43,23 @@ public:
         vec3 v2v0 = v0 - v2;
 
         // Test edge v0 -> v1
-        vec3 v0p = rec.p - v0;
+        vec3 v0p = p - v0;
         if (dot(N, cross(v0v1, v0p)) < 0)
             return false; // point not in tri
 
         // Test edge v1 -> v2
-        vec3 v1p = rec.p - v1;
+        vec3 v1p = p - v1;
         if (dot(N, cross(v1v2, v1p)) < 0)
             return false;
 
         // Test edge v2 -> v0
-        vec3 v2p = rec.p - v2;
+        vec3 v2p = p - v2;
         if (dot(N, cross(v2v0, v2p)) < 0)
             return false;
 
         // Write to hit record after all checks pass
         rec.t = t;
-        rec.p = r.at(rec.t);
+        rec.p = p;
         rec.set_face_normal(r, N);
         rec.mat = mat;
 
@@ -69,7 +69,7 @@ public:
 private:
     point3 v0, v1, v2; // Gotta assume counter clockwise winding
     vec3 N;
-    vec3 D;
+    double D;
     std::shared_ptr<material> mat;
 };
 
