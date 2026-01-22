@@ -5,6 +5,7 @@
 #include "hittable_list.h"
 #include "material.h"
 #include "sphere.h"
+#include "triangle.h"
 
 int main()
 {
@@ -16,13 +17,16 @@ int main()
 	auto material_left = std::make_shared<dielectric>(1.50);
 	auto material_bubble = std::make_shared<dielectric>(1.00 / 1.50);
 	auto material_right = std::make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
+	auto material_red = std::make_shared<lambertian>(color(1.0, 0, 0));
 
 	// world.add(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
 	world.add(std::make_shared<sphere>(point3(0, -100.5, -1), 100.0, material_ground));
 	world.add(std::make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
-	world.add(std::make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
+	// world.add(std::make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
 	world.add(std::make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.4, material_bubble));
 	world.add(std::make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
+	world.add(std::make_shared<triangle>(point3(0, 0.5, -0.8), point3(-0.5, -0.5, -0.5), point3(0.5, -0.5, -0.5), material_red));
+	// world.add(std::make_shared<triangle>(point3(-2.0, 2.0, 0.0), point3(-3.0, 0.5, 1.0), point3(-1.0, 0.5, 1.0), material_red));
 
 	// // Wide-angle test
 	// auto R = std::cos(pi / 4);
@@ -34,17 +38,17 @@ int main()
 	camera cam;
 
 	cam.aspect_ratio = 16.0 / 9.0;
-	cam.image_width = 400;
+	cam.image_width = 500;
 	cam.samples_per_pixel = 100;
 	cam.max_depth = 50;
 
 	cam.vfov = 20;
-	cam.lookfrom = point3(-2, 2, 1);
+	cam.lookfrom = point3(-4, 4, 2);
 	cam.lookat = point3(0, 0, -1);
 	cam.vup = vec3(0, 1, 0);
 
-	cam.defocus_angle = 10.0;
-	cam.focus_dist = 3.4;
+	cam.defocus_angle = 0.6;
+	cam.focus_dist = 6.4;
 
 	cam.render(world);
 
